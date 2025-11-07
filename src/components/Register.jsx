@@ -30,17 +30,28 @@ const Register = () => {
 
   return (
     <div>
-      <div className="p-4">
+      <div className="p-4 max-w-md mx-auto border rounded-lg shadow-lg mt-4">
 
-        <h2>Reister</h2>
-        <form onSubmit={handleSubmit}>
-            <input type="text" placeholder='name' onChange={(e)=>setForm({...form,name:e.target.value})}/>
+        <h2
+        className='text-2xl font-bold mb-4 '
+        >Reister</h2>
+        <form
+        className='flex flex-col gap-4'
+        onSubmit={handleSubmit}>
+            <input
+            className='border p-2 rounded'
+            type="text" placeholder='name' onChange={(e)=>setForm({...form,name:e.target.value})}/>
             <br/>
-            <input type="text" placeholder='email' onChange={(e)=>setForm({...form,email:e.target.value})}/>
+            <input
+            className='border p-2 rounded'
+            type="text" placeholder='email' onChange={(e)=>setForm({...form,email:e.target.value})}/>
             <br />
-            <input type="password"  placeholder='password' onChange={(e)=>setForm({...form,password:e.target.value})}/>
+            <input 
+            className='border p-2 rounded'
+            type="password"  placeholder='password' onChange={(e)=>setForm({...form,password:e.target.value})}/>
             <br />
             <button
+            className='bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition'
             onSubmit={handleSubmit}
             >Register</button>
         </form>

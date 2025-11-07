@@ -47,6 +47,9 @@ const TodoList = () => {
             }).then((response)=>{
                 alert("Todo updated successfully");
                 setTodos([...todos,response.data.todo]);
+                setTask({title:'',description:''});
+                setUpdating(false);
+                setUpdatingId(null);
                 window.location.reload();
             })
             
@@ -61,6 +64,7 @@ const TodoList = () => {
         }).then((response)=>{
             alert("Todo added successfully");
             setTodos([...todos,response.data.todo]);
+            setTask({title:'',description:''});
         })
         }
     } catch (error) {
@@ -97,19 +101,76 @@ const TodoList = () => {
         });
 
   }
+  const handleToggleComplete= (id,completed) => {
+    //toggle complete api call
+console.log(id,completed);
+
+    try {
+      axios.put(`http://localhost:5000/api/todos/update/${id}`
+      ,{
+        completed: !completed
+      },{
+        headers:{
+            Authorization:`Bearer ${localStorage.getItem("token")}`
+        }   
+    }).then((response)=>{
+        alert("Todo status updated successfully",response.data);
+        setTodos(todos.map((todo) => todo._id === id ? {...todo,completed:!completed} : todo));
+        window.location.reload();
+    });
+    } catch (error) {
+
+        console.error(error);
+        alert("Failed to update todo status");
+    }
+  }
 
 
   return (
-    <div>
-      <h2>TodoList</h2>
-        <div>
+    <>
+    <navbar>
+      <div
+      className="p-4 max-w-lg mx-auto border rounded-lg shadow-lg mt-4 flex justify-between items-center z-10 sticky top-0 bg-white"
+      >
+        <h1
+        className="text-3xl font-bold"
+        >Todo App</h1>
+        <button
+        className="bg-red-500 text-white p-2 rounded hover:bg-red-600 transition duration-300 ease-in-out"
+        onClick={()=>{
+            localStorage.removeItem("token");
+            window.location.reload();
+        }}
+        >Logout</button>
+      </div>
+    </navbar>
+    <div 
+    className="p-4 max-w-lg mx-auto border rounded-lg shadow-lg mt-4"
+    >
+      <h2
+      className="text-2xl font-bold mb-4"
+      >TodoList</h2>
+        <div
+        className="mb-4 flex items-center justify-center flex-direction-row"
+        >
             <form action="">
-                <label htmlFor="">Task</label>
-                <input type="text" value={task.title} onChange={(e)=>setTask({...task,title:e.target.value})}/>
-                <label htmlFor="">Description</label>
-                <input type="text" value={task.description} onChange={(e)=>setTask({...task,description:e.target.value})}/>
+                <label htmlFor=""
+                className="mr-2"
+                >Task</label>
+                <input 
+                className="mr-4 border p-1 rounded"
+                type="text" value={task.title} onChange={(e)=>setTask({...task,title:e.target.value})}/>
+<br />
+                <label htmlFor=""
+                className=" mr-2"
+                >Description</label>
+                <input 
+                className="mr-4 border p-1 rounded"
+                type="text" value={task.description} onChange={(e)=>setTask({...task,description:e.target.value})}/>
 
-        <button onClick={handleSubmit}>{updating ? "Update" : "Add Todo"}</button>
+        <button
+        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition duration-300 ease-in-out"
+        onClick={handleSubmit}>{updating ? "Update" : "Add Todo"}</button>
 
             </form>
         </div>
@@ -122,10 +183,18 @@ const TodoList = () => {
           <ul>
             {todos.map((todo) => (
               <li key={todo._id}>
-                <h3>{todo.title}</h3>
+                <h3
+                className={`font-bold mb-2 ${todo.completed ? 'line-through text-gray-500' : 'text-green-600'}`}
+                >{todo.title}</h3>
                 <p>{todo.description}</p>
                 <p>Completed: {todo.completed ? "Yes" : "No"}</p>
-                <button onClick={()=>handleEdit(todo._id,todo.title,todo.description)}>Update</button>
+                <button
+                onClick={()=>handleToggleComplete(todo._id,todo.completed)}
+                className={`mr-2 ${todo.completed ? 'bg-yellow-500' : 'bg-green-500'} text-white p-1 rounded hover:${todo.completed ? 'bg-yellow-600' : 'bg-green-600'} transition duration-300 ease-in-out`}
+                >{todo.completed ? "Mark as Incomplete" : "Mark as Completed"}</button>
+                <button
+                className="mr-2 bg-blue-500 text-white p-1 rounded hover:bg-blue-600 transition duration-300 ease-in-out"
+                onClick={()=>handleEdit(todo._id,todo.title,todo.description)}>Update</button>
                 <button onClick={()=>handleDelete(todo._id)}>Delete</button>
               </li>
             ))}
@@ -133,6 +202,7 @@ const TodoList = () => {
         </>
       )}
     </div>
+    </>
   );
 };
 
