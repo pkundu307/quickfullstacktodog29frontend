@@ -13,7 +13,7 @@ const TodoList = () => {
   useEffect(() => {
     // Fetch todos from API
     axios
-      .get("http://localhost:5000/api/todos/all", {
+      .get("/api/todos/all", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -37,7 +37,7 @@ const TodoList = () => {
     //add todo api call
     try {
         if(updating){
-            axios.put(`http://localhost:5000/api/todos/update/${updatingId}`,{
+            axios.put(`/api/todos/update/${updatingId}`,{
                 title:task.title,
                 description:task.description
             },{
@@ -54,7 +54,7 @@ const TodoList = () => {
             })
             
         } else{
-        axios.post("http://localhost:5000/api/todos/create",{
+        axios.post("/api/todos/create",{
             title:task.title,
             description:task.description
         },{
@@ -76,7 +76,7 @@ const TodoList = () => {
     //delete todo api call
 
     try {
-        axios.delete(`http://localhost:5000/api/todos/delete/${id}`,{
+        axios.delete(`/api/todos/delete/${id}`,{
             headers:{
                 Authorization:`Bearer ${localStorage.getItem("token")}`
             }   
@@ -106,7 +106,7 @@ const TodoList = () => {
 console.log(id,completed);
 
     try {
-      axios.put(`http://localhost:5000/api/todos/update/${id}`
+      axios.put(`/api/todos/update/${id}`
       ,{
         completed: !completed
       },{
